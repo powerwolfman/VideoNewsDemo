@@ -5,6 +5,7 @@ import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -17,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.lifucong.videoplayer.R;
+import com.lifucong.videoplayer.full.VideoViewActivity;
 
 import java.io.IOException;
 
@@ -45,11 +47,11 @@ public class SimpleVideoView extends FrameLayout {
     private ImageButton btnFullScreen;
 
     public SimpleVideoView(Context context) {
-        super(context);
+        this(context,null);
     }
 
     public SimpleVideoView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs,0);
     }
 
     public SimpleVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -80,6 +82,25 @@ public class SimpleVideoView extends FrameLayout {
         initControllerViews(); // 初始化视频播放控制视图
     }
 
+    //对播放资源进行设置
+    public void setVideoPath(String videoPath) {
+        this.videoPath = videoPath;
+    }
+
+    // 与Activity状态保持同步
+    // 用来初始状态
+    public void onResume() {
+        initMediaPlayer(); // 初始化MediaPlayer，设置一系列监听器
+        prepareMediaPlayer(); // 准备MediaPlayer，同时更新UI状态
+    }
+
+    // 与Activity状态保持同步
+    // 用来释放状态
+    public void onPause() {
+        pauseMediaPlayer(); // 暂停播放，同时更新UI状态
+        releaseMediaPlayer(); // 释放MediaPlayer，同时更新UI状态
+    }
+
     // 初始化视频播放控制视图
     private void initControllerViews() {
         //预览图
@@ -106,15 +127,14 @@ public class SimpleVideoView extends FrameLayout {
         btnFullScreen.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO 全屏未实现
-                Toast.makeText(getContext(), "全屏未实现", Toast.LENGTH_LONG).show();
+                VideoViewActivity.open(getContext(),videoPath);
             }
         });
     }
 
-    //点击暂停时调用的方法，更新UI
+    //点击开始时调用的方法，更新UI
     private void startMediaPlayer() {
-        ivPreView.setVisibility(View.GONE);//预览图隐藏
+        ivPreView.setVisibility(View.INVISIBLE);//预览图隐藏
         btnToggle.setImageResource(R.drawable.ic_pause);
         mediaplayer.start();//开始播放
         isPlaying = true;
@@ -137,18 +157,6 @@ public class SimpleVideoView extends FrameLayout {
         surfaceHolder = surfaceView.getHolder();
         //设置PixelFormat,防止花屏
         surfaceHolder.setFormat(PixelFormat.RGBA_8888);
-    }
-
-    //对播放资源进行设置
-    public void setVideoPath(String videoPath) {
-        this.videoPath = videoPath;
-    }
-
-    // 与Activity状态保持同步
-    // 用来初始状态
-    public void onResume() {
-        initMediaPlayer(); // 初始化MediaPlayer，设置一系列监听器
-        prepareMediaPlayer(); // 准备MediaPlayer，同时更新UI状态
     }
 
     // 准备MediaPlayer，同时更新UI状态
@@ -203,12 +211,6 @@ public class SimpleVideoView extends FrameLayout {
         });
     }
 
-    // 与Activity状态保持同步
-    // 用来释放状态
-    public void onPause() {
-        pauseMediaPlayer(); // 暂停播放，同时更新UI状态
-        releaseMediaPlayer(); // 释放MediaPlayer，同时更新UI状态
-    }
 
     // 释放MediaPlayer，同时更新UI状态
     private void releaseMediaPlayer() {
