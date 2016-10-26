@@ -18,6 +18,7 @@ import io.vov.vitamio.widget.VideoView;
 
 /**
  * Created by Administrator on 2016/10/26.
+ * 全屏播放Activity
  */
 
 public class VideoViewActivity extends AppCompatActivity {

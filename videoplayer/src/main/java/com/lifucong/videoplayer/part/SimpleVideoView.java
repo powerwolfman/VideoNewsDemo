@@ -27,6 +27,7 @@ import io.vov.vitamio.Vitamio;
 
 /**
  * Created by Administrator on 2016/10/25.
+ * 自定义播放视图
  */
 
 public class SimpleVideoView extends FrameLayout {
