@@ -34,9 +34,9 @@ public class VideoViewActivity extends AppCompatActivity {
 
 
     //启动当前Activity
-    public static void open(Context context, String videoPath){
-        Intent intent = new Intent(context,VideoViewActivity.class);
-        intent.putExtra(KEY_VIDEO_PATH,videoPath);
+    public static void open(Context context, String videoPath) {
+        Intent intent = new Intent(context, VideoViewActivity.class);
+        intent.putExtra(KEY_VIDEO_PATH, videoPath);
         context.startActivity(intent);
     }
 
@@ -72,7 +72,7 @@ public class VideoViewActivity extends AppCompatActivity {
     }
 
     //初始化缓冲视图
-    private void initBufferView(){
+    private void initBufferView() {
         tvBufferInfo = (TextView) findViewById(R.id.tvBufferInfo);
         ivLoading = (ImageView) findViewById(R.id.ivLoading);
         tvBufferInfo.setVisibility(View.INVISIBLE);
@@ -80,11 +80,12 @@ public class VideoViewActivity extends AppCompatActivity {
     }
 
     //初始化视频视图
-    private void initVideoView(){
+    private void initVideoView() {
         Vitamio.isInitialized(this);//初始化vitamio!!!!
         videoView = (VideoView) findViewById(R.id.videoView);
         //设置视图控制器
-        videoView.setMediaController(new MediaController(this));
+//        videoView.setMediaController(new MediaController(this));
+        videoView.setMediaController(new CustomMediaController(this));
         videoView.setKeepScreenOn(true);//视屏常亮
         videoView.requestFocus();//拿到焦点
         //缓冲监听三步走~
@@ -100,12 +101,12 @@ public class VideoViewActivity extends AppCompatActivity {
         videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
             @Override
             public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                switch (what){
+                switch (what) {
                     //开始缓冲
                     case MediaPlayer.MEDIA_INFO_BUFFERING_START:
                         //显示缓冲视图
                         showBufferView();
-                        if (videoView.isPlaying()){
+                        if (videoView.isPlaying()) {
                             videoView.pause();
                         }
                         return true;
@@ -137,7 +138,7 @@ public class VideoViewActivity extends AppCompatActivity {
     }
 
     //显示缓冲视图
-    private void showBufferView(){
+    private void showBufferView() {
         tvBufferInfo.setVisibility(View.VISIBLE);
         ivLoading.setVisibility(View.VISIBLE);
         downloadSpeed = 0;
@@ -145,13 +146,13 @@ public class VideoViewActivity extends AppCompatActivity {
     }
 
     //隐藏缓冲视图
-    private void hideBufferView(){
+    private void hideBufferView() {
         tvBufferInfo.setVisibility(View.INVISIBLE);
         ivLoading.setVisibility(View.INVISIBLE);
     }
 
     //更新缓冲视图
-    private void updataBufferView(){
+    private void updataBufferView() {
         String info = bufferPercent + "%  " + downloadSpeed + "kb/s";
         tvBufferInfo.setText(info);
     }
