@@ -31,4 +31,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     /*****************butterknife:8.4.0 end******************/
+
+    //---------recyclerview
+    compile 'com.android.support:recyclerview-v7:24.0.0'
 }
